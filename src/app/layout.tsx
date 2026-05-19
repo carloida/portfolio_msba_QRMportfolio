@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { profile } from "@/data/portfolio";
-
 import "./globals.css";
 
 const sans = IBM_Plex_Sans({
@@ -19,8 +17,9 @@ const serif = IBM_Plex_Serif({
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} | Analytics, Operations, and Machine Learning`,
-  description: profile.description,
+  title: "Interactive Portfolio Optimization Lab",
+  description:
+    "A quantitative risk management portfolio construction lab comparing naive diversification, classical mean variance optimization, and robust regularized portfolios.",
   icons: {
     icon: "/favicon.svg"
   }

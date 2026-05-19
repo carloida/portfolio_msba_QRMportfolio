@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: 214 45% 99%;
-  --surface: 213 30% 97%;
-  --foreground: 218 42% 15%;
-  --muted: 215 19% 42%;
-  --line: 214 28% 88%;
-  --line-strong: 215 28% 80%;
-  --navy: 217 44% 17%;
-  --navy-soft: 214 39% 23%;
+  --background: 0 0% 100%;
+  --surface: 19 100% 98%;
+  --foreground: 335 31% 11%;
+  --muted: 331 7% 39%;
+  --line: 340 24% 89%;
+  --line-strong: 339 18% 78%;
+  --navy: 351 100% 15%;
+  --navy-soft: 340 100% 22%;
 }
 
 html {
@@ -33,7 +33,7 @@ body {
 
   body {
     @apply font-sans antialiased;
-    background-image: radial-gradient(circle at top right, rgba(15, 31, 53, 0.05), transparent 30%);
+    background: #ffffff;
   }
 
   a,

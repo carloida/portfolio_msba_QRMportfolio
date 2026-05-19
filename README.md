@@ -1,71 +1,49 @@
-# Carlo Emilio Ida Portfolio
+# Interactive Portfolio Optimization Lab
 
-Frontend-first portfolio website for Carlo Emilio Ida, built as the main landing page for MSBA work, analytics projects, operations experience, and future deployed applications.
+An interactive DBA5109 Quantitative Risk Management showcase for comparing naive diversification, classical mean variance optimization, and robust regularized portfolio construction across 43 US industry portfolios.
 
-This repository is the portfolio shell that will later connect to:
-
-- project detail pages
-- case studies
-- live machine learning demos
-- analytics dashboards
-- downloadable resume assets
-- future backend-powered contact or application features
-
-## Overview
-
-The site is designed to present Carlo as a structured, business-aware analytics professional with a background spanning:
-
-- NUS MSc in Business Analytics
-- project management and operations delivery
-- SQL and data modeling
-- Python and machine learning
-- reporting, KPI design, and decision support
-
-The current version is intentionally frontend only.
+The app is designed as a polished investment lab rather than a notebook export. It loads the saved project artifacts, explains the portfolio construction logic, and lets users explore how method choice, regularization, caps, blends, and risk preference affect the displayed allocation.
 
 ## Stack
 
-- Next.js
-- TypeScript
+- Next.js App Router
+- React and TypeScript
 - Tailwind CSS
-- App Router
+- Recharts
+- Framer Motion
+- Local JSON/CSV files from `public/data`
 
-## Project Structure
+## Data Folder
+
+Place the exported project artifacts here:
 
 ```text
-src/
-  app/
-    layout.tsx
-    page.tsx
-    globals.css
-  components/
-    layout/
-    sections/
-    ui/
-  data/
-    portfolio.ts
-  lib/
-  types/
-
 public/
-  carlo-emilio-ida-resume-2026.pdf
+  data/
+    portfolio_artifact.json
+    final_portfolio_weights.csv
+    final_portfolio_weights.json
+    portfolio_concentration_metrics.json
+    gp_data_1986_to_2015.csv
+    cv_results.json or cv_results.csv                  optional
+    performance_metrics.json or performance_metrics.csv optional
 ```
 
-## Main Content Source
+The current app has already copied the provided required files into `public/data`.
 
-Most editable portfolio content lives in:
+## Data Behavior
 
-`src/data/portfolio.ts`
+The browser reads JSON and CSV only. It does not load `portfolio_engine.joblib` directly, because joblib requires Python.
 
-Update this file to change:
+The provided `portfolio_artifact.json` includes saved final weights, Tangency and GMV weights, CAPM expected returns, sample means, shrinkage covariance, and sample covariance. The app uses these real exports to compute:
 
-- hero copy
-- about details
-- skills
-- project cards
-- experience timeline
-- live demo placeholders
-- contact links
+- allocation charts
+- concentration metrics
+- expected return, volatility, and Sharpe estimates
+- derived performance comparison views
+- an estimated efficient frontier from exported inputs
+
+Slider changes are labeled as exploratory browser transforms unless a Python backend is added to rerun the original optimizer.
 
 ## Local Development
 
@@ -75,7 +53,7 @@ Install dependencies:
 npm install
 ```
 
-Run the development server:
+Run the app:
 
 ```bash
 npm run dev
@@ -91,53 +69,20 @@ Build for production:
 npm run build
 ```
 
-## Project App Links
+## Optional Python Backend
 
-The Movie Hit Predictor button uses `NEXT_PUBLIC_MOVIE_PREDICTOR_URL`.
-
-For local portfolio review:
+If exact recomputation from `portfolio_engine.joblib` is needed later, add a Python API instead of loading joblib in the browser. A suitable backend shape would be:
 
 ```text
-NEXT_PUBLIC_MOVIE_PREDICTOR_URL=http://localhost:5173
+GET  /api/portfolio
+GET  /api/weights
+GET  /api/metrics
+GET  /api/cv-results
+POST /api/simulate
 ```
 
-For deployment, replace it with the public URL of the deployed movie predictor frontend.
+The frontend can then call JSON endpoints while the backend handles joblib, covariance arrays, constraints, and optimization routines.
 
-## Current Portfolio Focus
+## Main Message
 
-This portfolio currently highlights:
-
-- Carlo Emilio Ida's analytics and operations profile
-- NUS MSc Business Analytics work
-- applied SQL, Power BI, machine learning, and optimization projects
-- the Movie Hit Predictor project from DBA5106, linking to the standalone full-stack app repository
-- the NUS-SYNAPXE-IMDA AI Innovation Challenge 2026 recognition
-- future live-demo slots for deployed applications
-
-## Deployment
-
-This project is suitable for deployment on platforms such as:
-
-- Vercel
-- Cloudflare Pages
-- Netlify
-
-For a Next.js-first workflow, Vercel is the simplest option.
-
-## Future Extensions
-
-Planned additions may include:
-
-- dedicated project pages under the App Router
-- GitHub project links per project card
-- live app routes
-- blog or writing section
-- downloadable case study PDFs
-- backend contact form handling
-- authenticated private project areas if needed later
-
-## Notes
-
-- This repository is intended to remain the main portfolio landing page.
-- Other projects can be linked into this site over time without replacing the overall portfolio structure.
-- The current implementation is deployment-ready on the frontend side, with content and sections organized for future expansion.
+I built an interactive portfolio construction lab that allows users to compare naive diversification, classical mean variance optimization, and robust regularized optimization under realistic constraints. The goal is not just to show final weights, but to make the portfolio construction thought process understandable and interactive.

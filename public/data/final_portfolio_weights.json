@@ -1,0 +1,303 @@
+[
+  {
+    "index": 0,
+    "rank": 1,
+    "industry": "Util",
+    "weight": 0.2701531852151389,
+    "weight_percent": 27.015318521513894
+  },
+  {
+    "index": 1,
+    "rank": 2,
+    "industry": "Food",
+    "weight": 0.1251227772930123,
+    "weight_percent": 12.51227772930123
+  },
+  {
+    "index": 2,
+    "rank": 3,
+    "industry": "Hshld",
+    "weight": 0.12130078712845617,
+    "weight_percent": 12.130078712845616
+  },
+  {
+    "index": 3,
+    "rank": 4,
+    "industry": "Drugs",
+    "weight": 0.06906959319986686,
+    "weight_percent": 6.906959319986686
+  },
+  {
+    "index": 4,
+    "rank": 5,
+    "industry": "Oil",
+    "weight": 0.06884334557314005,
+    "weight_percent": 6.884334557314005
+  },
+  {
+    "index": 5,
+    "rank": 6,
+    "industry": "Telcm",
+    "weight": 0.0681526844018988,
+    "weight_percent": 6.81526844018988
+  },
+  {
+    "index": 6,
+    "rank": 7,
+    "industry": "Beer",
+    "weight": 0.05835094004132488,
+    "weight_percent": 5.835094004132488
+  },
+  {
+    "index": 7,
+    "rank": 8,
+    "industry": "Guns",
+    "weight": 0.0472818605284481,
+    "weight_percent": 4.72818605284481
+  },
+  {
+    "index": 8,
+    "rank": 9,
+    "industry": "MedEq",
+    "weight": 0.04692110020941918,
+    "weight_percent": 4.692110020941918
+  },
+  {
+    "index": 9,
+    "rank": 10,
+    "industry": "Whlsl",
+    "weight": 0.03174681383173757,
+    "weight_percent": 3.1746813831737573
+  },
+  {
+    "index": 10,
+    "rank": 11,
+    "industry": "Meals",
+    "weight": 0.031136473506887127,
+    "weight_percent": 3.1136473506887126
+  },
+  {
+    "index": 11,
+    "rank": 12,
+    "industry": "Rtail",
+    "weight": 0.028265935414900505,
+    "weight_percent": 2.8265935414900505
+  },
+  {
+    "index": 12,
+    "rank": 13,
+    "industry": "Trans",
+    "weight": 0.021739886341645198,
+    "weight_percent": 2.1739886341645196
+  },
+  {
+    "index": 13,
+    "rank": 14,
+    "industry": "Gold",
+    "weight": 0.011914617314124394,
+    "weight_percent": 1.1914617314124394
+  },
+  {
+    "index": 14,
+    "rank": 15,
+    "industry": "LabEq",
+    "weight": 2.9581514980685314e-18,
+    "weight_percent": 2.9581514980685315e-16
+  },
+  {
+    "index": 15,
+    "rank": 16,
+    "industry": "Insur",
+    "weight": 2.9059355593070752e-18,
+    "weight_percent": 2.905935559307075e-16
+  },
+  {
+    "index": 16,
+    "rank": 17,
+    "industry": "Ships",
+    "weight": 2.609235101696458e-18,
+    "weight_percent": 2.609235101696458e-16
+  },
+  {
+    "index": 17,
+    "rank": 18,
+    "industry": "RlEst",
+    "weight": 1.663362364698215e-18,
+    "weight_percent": 1.663362364698215e-16
+  },
+  {
+    "index": 18,
+    "rank": 19,
+    "industry": "Cnstr",
+    "weight": 1.4428633465757579e-18,
+    "weight_percent": 1.4428633465757579e-16
+  },
+  {
+    "index": 19,
+    "rank": 20,
+    "industry": "ElcEq",
+    "weight": 1.3229972918350712e-18,
+    "weight_percent": 1.3229972918350712e-16
+  },
+  {
+    "index": 20,
+    "rank": 21,
+    "industry": "Mines",
+    "weight": 1.1824131658002754e-18,
+    "weight_percent": 1.1824131658002754e-16
+  },
+  {
+    "index": 21,
+    "rank": 22,
+    "industry": "Paper",
+    "weight": 1.001249717248737e-18,
+    "weight_percent": 1.0012497172487371e-16
+  },
+  {
+    "index": 22,
+    "rank": 23,
+    "industry": "FabPr",
+    "weight": 8.94891086797189e-19,
+    "weight_percent": 8.948910867971889e-17
+  },
+  {
+    "index": 23,
+    "rank": 24,
+    "industry": "Comps",
+    "weight": 8.752712311540947e-19,
+    "weight_percent": 8.752712311540947e-17
+  },
+  {
+    "index": 24,
+    "rank": 25,
+    "industry": "Hlth",
+    "weight": 7.877410590713706e-19,
+    "weight_percent": 7.877410590713706e-17
+  },
+  {
+    "index": 25,
+    "rank": 26,
+    "industry": "Mach",
+    "weight": 4.884744498165866e-19,
+    "weight_percent": 4.884744498165866e-17
+  },
+  {
+    "index": 26,
+    "rank": 27,
+    "industry": "Toys",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 27,
+    "rank": 28,
+    "industry": "Rubbr",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 28,
+    "rank": 29,
+    "industry": "Chems",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 29,
+    "rank": 30,
+    "industry": "Books",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 30,
+    "rank": 31,
+    "industry": "Clths",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 31,
+    "rank": 32,
+    "industry": "Steel",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 32,
+    "rank": 33,
+    "industry": "BldMt",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 33,
+    "rank": 34,
+    "industry": "Txtls",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 34,
+    "rank": 35,
+    "industry": "Autos",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 35,
+    "rank": 36,
+    "industry": "Coal",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 36,
+    "rank": 37,
+    "industry": "Aero",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 37,
+    "rank": 38,
+    "industry": "PerSv",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 38,
+    "rank": 39,
+    "industry": "BusSv",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 39,
+    "rank": 40,
+    "industry": "Boxes",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 40,
+    "rank": 41,
+    "industry": "Chips",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 41,
+    "rank": 42,
+    "industry": "Banks",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  },
+  {
+    "index": 42,
+    "rank": 43,
+    "industry": "Fin",
+    "weight": 0.0,
+    "weight_percent": 0.0
+  }
+]
