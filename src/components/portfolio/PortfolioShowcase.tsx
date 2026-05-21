@@ -8,6 +8,7 @@ import {
   FlaskConical,
   Gauge,
   LineChart,
+  Sparkles,
   SlidersHorizontal
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -934,6 +935,110 @@ function FinalAllocationNarrative({ artifact, metrics }: { artifact: PortfolioAr
   );
 }
 
+function LlmConfirmModal({
+  loading,
+  onCancel,
+  onGenerate
+}: {
+  loading: boolean;
+  onCancel: () => void;
+  onGenerate: () => void;
+}) {
+  return (
+    <div
+      aria-labelledby="llm-confirm-title"
+      aria-modal="true"
+      className="fixed inset-0 z-[80] grid place-items-center bg-[#24131A]/35 px-4 backdrop-blur-sm"
+      role="dialog"
+    >
+      <div className="w-full max-w-md rounded-lg border border-[#E8DDE1] bg-white p-6 shadow-soft">
+        <h3 className="text-xl font-semibold text-[#4F000B]" id="llm-confirm-title">
+          Generate LLM Insights
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-[#594A51]">
+          This will call the OpenAI API and consume AI tokens. Continue?
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            className="rounded-full border border-[#E8DDE1] px-4 py-2 text-sm font-semibold text-[#594A51] transition hover:border-[#CE4257] hover:text-[#720026]"
+            disabled={loading}
+            onClick={onCancel}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            className="rounded-full bg-[#720026] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4F000B] disabled:cursor-not-allowed disabled:bg-[#BCA4AB]"
+            disabled={loading}
+            onClick={onGenerate}
+            type="button"
+          >
+            Generate Insights
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LlmInsightsCard({
+  error,
+  insight,
+  loading,
+  stale,
+  onGenerateClick
+}: {
+  error: string;
+  insight: string;
+  loading: boolean;
+  stale: boolean;
+  onGenerateClick: () => void;
+}) {
+  return (
+    <div className="rounded-lg border border-[#E8DDE1] bg-white p-5 text-sm leading-6 text-[#65565D] shadow-soft">
+      <div className="flex items-center gap-3">
+        <Sparkles className="h-5 w-5 text-[#CE4257]" />
+        <h3 className="text-lg font-semibold text-[#4F000B]">LLM Insights</h3>
+      </div>
+
+      {stale ? (
+        <p className="mt-4 rounded-lg bg-[#FFF8F5] px-3 py-2 text-sm font-semibold text-[#720026]">
+          Portfolio settings changed. Regenerate insights to reflect the latest output.
+        </p>
+      ) : null}
+
+      <div className="mt-4 min-h-[120px]">
+        {loading ? (
+          <p>Generating LLM insights...</p>
+        ) : error ? (
+          <div>
+            <p className="font-semibold text-[#CE4257]">
+              Unable to generate LLM insights. Please check the API key, quota, or server logs.
+            </p>
+            <p className="mt-2 text-[#8B5E63]">{error}</p>
+          </div>
+        ) : insight ? (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#A14A58]">LLM Insights</p>
+            <p className="mt-3 whitespace-pre-line text-[#594A51]">{insight}</p>
+          </div>
+        ) : (
+          <p>Generate a short AI-assisted interpretation of the current optimized portfolio.</p>
+        )}
+      </div>
+
+      <button
+        className="mt-5 rounded-full bg-[#720026] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4F000B] disabled:cursor-not-allowed disabled:bg-[#BCA4AB]"
+        disabled={loading}
+        onClick={onGenerateClick}
+        type="button"
+      >
+        Generate LLM Insights
+      </button>
+    </div>
+  );
+}
+
 function ResultsInsights() {
   const bullets = [
     "Equal weight is a strong baseline because it avoids estimation error.",
@@ -1099,16 +1204,90 @@ function LabSection({
     maxCap: artifact.selected_strategy.max_industry_cap,
     allowShort: artifact.selected_strategy.allow_short
   });
+  const [showLlmConfirm, setShowLlmConfirm] = useState(false);
+  const [llmInsight, setLlmInsight] = useState("");
+  const [llmLoading, setLlmLoading] = useState(false);
+  const [llmError, setLlmError] = useState("");
+  const [insightFingerprint, setInsightFingerprint] = useState("");
 
   const weights = useMemo(() => applyControls(artifact, controls), [artifact, controls]);
+  const allRows = useMemo(() => weightsToRows(artifact.portfolio_weights.asset_names, weights), [artifact.portfolio_weights.asset_names, weights]);
   const rows = useMemo(() => {
-    const allRows = weightsToRows(artifact.portfolio_weights.asset_names, weights);
     return controls.showOnlyNonzero ? allRows.filter((row) => Math.abs(row.weight) > 0.0001) : allRows;
-  }, [artifact.portfolio_weights.asset_names, controls.showOnlyNonzero, weights]);
+  }, [allRows, controls.showOnlyNonzero]);
   const metrics = useMemo(() => concentrationMetrics(weights), [weights]);
   const selected = useMemo(() => portfolioMetrics(controls.method, weights, artifact, "exploratory"), [artifact, controls.method, weights]);
   const comparisonRows = useMemo(() => buildPerformanceComparison(artifact, weights), [artifact, weights]);
   const frontier = useMemo(() => buildFrontier(artifact), [artifact]);
+  const currentPortfolioFingerprint = useMemo(
+    () =>
+      JSON.stringify({
+        controls,
+        weights
+      }),
+    [controls, weights]
+  );
+  const buildCurrentPortfolioInsightPayload = () => ({
+    weights,
+    industryNames: artifact.portfolio_weights.asset_names,
+    blendWeights: {
+      tan: controls.tanBlend,
+      gmv: controls.gmvBlend,
+      ewp: controls.equalBlend
+    },
+    controls: {
+      selectedMethod: controls.method,
+      cap: controls.maxCap,
+      regularizationLambda: controls.lambda,
+      riskPreference: controls.riskPreference,
+      allowShort: controls.allowShort,
+      normalizeWeights: controls.normalizeWeights
+    },
+    metrics: {
+      expectedReturn: selected.expectedReturn,
+      volatility: selected.volatility,
+      sharpe: selected.sharpe,
+      beta: selected.beta,
+      hhi: metrics.hhi,
+      effectiveNumberOfHoldings: metrics.effective_number_of_holdings,
+      maxWeight: metrics.max_weight,
+      minWeight: metrics.min_weight,
+      nonzeroHoldings: metrics.nonzero_holdings,
+      weightSum: metrics.weight_sum
+    },
+    topAllocations: allRows.slice(0, 10),
+    bottomAllocations: [...allRows].sort((a, b) => a.weight - b.weight).slice(0, 5),
+    projectContext:
+      "Quantitative Risk Management portfolio construction project using 43 US industry portfolios from 1986 to 2015, evaluated with out-of-sample Sharpe ratio on withheld 2016 to 2020 data."
+  });
+
+  async function generateLlmInsight() {
+    setLlmLoading(true);
+    setLlmError("");
+
+    try {
+      const response = await fetch("/api/llm-insights", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(buildCurrentPortfolioInsightPayload())
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate LLM insight.");
+      }
+
+      setLlmInsight(data.insight);
+      setInsightFingerprint(currentPortfolioFingerprint);
+    } catch (error) {
+      setLlmError(error instanceof Error ? error.message : "Failed to generate LLM insight.");
+    } finally {
+      setLlmLoading(false);
+      setShowLlmConfirm(false);
+    }
+  }
 
   return (
     <SectionShell eyebrow="Investment lab" id="lab" title="Adjust assumptions and watch the allocation move">
@@ -1128,7 +1307,16 @@ function LabSection({
             </div>
           </div>
           <div className="grid gap-5">
-            <FinalAllocationNarrative artifact={artifact} metrics={metrics} />
+            <div className="grid gap-5 lg:grid-cols-2">
+              <FinalAllocationNarrative artifact={artifact} metrics={metrics} />
+              <LlmInsightsCard
+                error={llmError}
+                insight={llmInsight}
+                loading={llmLoading}
+                onGenerateClick={() => setShowLlmConfirm(true)}
+                stale={Boolean(llmInsight && insightFingerprint !== currentPortfolioFingerprint)}
+              />
+            </div>
             <WeightBarChart maxCap={controls.maxCap} rows={rows} totalIndustries={artifact.data_summary.number_of_industries} />
             <div className="grid gap-5 lg:grid-cols-2">
               <AllocationDonutChart rows={rows} />
@@ -1144,6 +1332,9 @@ function LabSection({
         <CVHeatmap artifact={artifact} cvResults={cvResults} />
         <DataNotice artifact={artifact} />
       </div>
+      {showLlmConfirm ? (
+        <LlmConfirmModal loading={llmLoading} onCancel={() => setShowLlmConfirm(false)} onGenerate={generateLlmInsight} />
+      ) : null}
     </SectionShell>
   );
 }

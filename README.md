@@ -69,6 +69,26 @@ Build for production:
 npm run build
 ```
 
+## Environment Variables
+
+Local development:
+
+Create `.env.local` in the project root:
+
+```bash
+OPENAI_API_KEY=your_api_key_here
+```
+
+Do not use `NEXT_PUBLIC_OPENAI_API_KEY`.
+
+Do not commit `.env.local`.
+
+Vercel deployment:
+
+Go to Vercel Project Settings -> Environment Variables. Add `OPENAI_API_KEY`, then redeploy after adding or changing the variable.
+
+The LLM Insights feature calls the server-side route `/api/llm-insights` and uses the OpenAI Responses API with `gpt-5.4-mini`.
+
 ## Optional Python Backend
 
 If exact recomputation from `portfolio_engine.joblib` is needed later, add a Python API instead of loading joblib in the browser. A suitable backend shape would be:
