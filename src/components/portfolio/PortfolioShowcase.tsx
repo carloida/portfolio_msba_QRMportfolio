@@ -7,6 +7,7 @@ import {
   ChevronDown,
   FlaskConical,
   Gauge,
+  Lightbulb,
   LineChart,
   Sparkles,
   SlidersHorizontal
@@ -155,6 +156,150 @@ export function SummaryCards({ cards }: { cards: Array<[string, string]> }) {
         </motion.div>
       ))}
     </div>
+  );
+}
+
+function ModelBriefingSection() {
+  const portfolios = [
+    ["MKT", "Market benchmark", "0.4916", "0.9998", "Passive CRSP value-weighted benchmark"],
+    ["EWP", "Equal Weighted Portfolio", "0.5027", "0.6943", "Naive 1/43 diversification baseline"],
+    ["TAN", "Tangency Portfolio", "1.2769", "1.0089", "Sharpe-maximizing MVO; strong in-sample but fragile"],
+    ["TAN-robust", "CAPM + shrinkage tangency", "-", "1.4692", "Best Section 1 OOS Sharpe after robust estimation"],
+    ["GMV", "Global Minimum Variance", "0.6951", "1.0071", "Variance-only optimizer; less dependent on noisy means"],
+    ["GMV-robust", "Shrinkage covariance GMV", "-", "1.3910", "Robust risk-controlled variant"]
+  ];
+
+  const validationRows: Array<[string, string]> = [
+    ["Training data", "January 1986 to December 2015, 43 US industry portfolios"],
+    ["Data challenge horizon", "Static allocation evaluated on withheld 2016 to 2020 data"],
+    ["CV design", "3 rolling windows, each with 15-year training and 5-year validation periods"],
+    ["Search space", "66 blend combinations x 6 lambda values = 396 combinations"],
+    ["Selection criterion", "Highest mean out-of-sample Sharpe ratio across validation windows"]
+  ];
+
+  const limitations = [
+    "Only 3 CV windows, so mean out-of-sample Sharpe estimates have high variance.",
+    "Static 5-year weights can drift as industries perform differently, causing unintended concentration.",
+    "The 2016 to 2020 horizon mixes a long bull market with the COVID-19 crash, so regime sensitivity remains.",
+    "Long-only and 30% cap constraints improve realism but may leave alpha unavailable to unconstrained methods.",
+    "Market-cap weights were unavailable, so beta-implied proxies are only approximations."
+  ];
+
+  const recommendations = [
+    "Use more rolling windows or blocked cross-validation to increase confidence in hyperparameter selection.",
+    "Add transaction costs, turnover constraints, and rebalancing rules to make implementation performance more realistic.",
+    "Test regime-aware or stress-tested allocations across crisis, inflation, and bull-market environments.",
+    "Compare against Black-Litterman, risk parity, hierarchical risk parity, and constrained factor models.",
+    "Monitor drift and refresh covariance, beta, and concentration controls through a scheduled portfolio review process."
+  ];
+
+  return (
+    <SectionShell eyebrow="Model selection brief" id="model-briefing" title="Why the final recommendation is GMV Robust L2">
+      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid gap-5">
+          <div className="rounded-lg border border-[#E8DDE1] bg-white p-6 shadow-soft">
+            <p className="text-sm leading-6 text-[#65565D]">
+              The project tested classical mean-variance portfolios, robust shrinkage variants, and regularized
+              portfolio construction. Although Tangency looked strongest in-sample, it depended heavily on noisy
+              expected-return estimates. The final data-challenge recommendation is a regularized GMV-robust portfolio
+              because rolling-window validation favored covariance-driven risk control over return chasing.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {[
+                ["Chosen strategy", "GMV Robust L2"],
+                ["Selected lambda", "0.001"],
+                ["Mean CV OOS Sharpe", "0.6977"]
+              ].map(([label, value]) => (
+                <div className="rounded-lg border border-[#E8DDE1] bg-[#FFF8F5] p-4" key={label}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#A14A58]">{label}</p>
+                  <p className="mt-2 text-xl font-semibold text-[#4F000B]">{value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 rounded-lg border border-[#F3C7C0] bg-[#FFF8F5] p-4">
+              <p className="text-sm font-semibold text-[#720026]">Sharpe ratio in plain language</p>
+              <p className="mt-2 text-sm leading-6 text-[#65565D]">
+                Sharpe ratio measures return earned per unit of volatility. In this project, it is the main comparison
+                metric because the goal is not simply higher return, but more efficient risk-adjusted performance.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <BriefList icon={<Gauge className="h-5 w-5 text-[#CE4257]" />} items={validationRows} title="Validation design" />
+            <BriefList icon={<Lightbulb className="h-5 w-5 text-[#CE4257]" />} items={recommendations} title="Recommendations" />
+          </div>
+        </div>
+
+        <div className="grid gap-5">
+          <div className="overflow-hidden rounded-lg border border-[#E8DDE1] bg-white shadow-soft">
+            <div className="flex items-center gap-3 border-b border-[#E8DDE1] bg-[#4F000B] px-5 py-4 text-white">
+              <BarChart3 className="h-5 w-5" />
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-white/65">Model evaluation</p>
+                <h3 className="text-lg font-semibold">Portfolios trained and tested</h3>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                <thead className="bg-[#FFF8F5] text-xs uppercase tracking-[0.16em] text-[#A14A58]">
+                  <tr>
+                    <th className="px-4 py-3">Code</th>
+                    <th className="px-4 py-3">Model</th>
+                    <th className="px-4 py-3 text-right">In-sample Sharpe</th>
+                    <th className="px-4 py-3 text-right">OOS Sharpe</th>
+                    <th className="px-4 py-3">Interpretation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {portfolios.map(([code, model, inSample, oos, note]) => (
+                    <tr className={code === "GMV-robust" ? "bg-[#FFF8F5]" : "border-t border-[#E8DDE1]"} key={code}>
+                      <td className="px-4 py-3 font-semibold text-[#4F000B]">{code}</td>
+                      <td className="px-4 py-3 text-[#42333A]">{model}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-[#24131A]">{inSample}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-[#24131A]">{oos}</td>
+                      <td className="px-4 py-3 text-[#65565D]">{note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <BriefList icon={<FlaskConical className="h-5 w-5 text-[#CE4257]" />} items={limitations} title="Study limitations" />
+        </div>
+      </div>
+    </SectionShell>
+  );
+}
+
+function BriefList({ icon, items, title }: { icon: React.ReactNode; items: Array<string | [string, string]>; title: string }) {
+  return (
+    <article className="rounded-lg border border-[#E8DDE1] bg-white p-5 shadow-soft">
+      <div className="flex items-center gap-3">
+        {icon}
+        <h3 className="text-lg font-semibold text-[#4F000B]">{title}</h3>
+      </div>
+      <ul className="mt-4 grid gap-3 text-sm leading-6 text-[#65565D]">
+        {items.map((item) => {
+          const key = Array.isArray(item) ? item.join(":") : item;
+          return (
+            <li className="flex gap-2" key={key}>
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#CE4257]" />
+              <span>
+                {Array.isArray(item) ? (
+                  <>
+                    <span className="font-semibold text-[#42333A]">{item[0]}:</span> {item[1]}
+                  </>
+                ) : (
+                  item
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </article>
   );
 }
 
@@ -1375,6 +1520,7 @@ export function PortfolioShowcase() {
     <main className="min-h-screen bg-white text-[#24131A]" id="main-content">
       <StickyNav />
       <HeroSection artifact={artifact} />
+      <ModelBriefingSection />
       <StoryMode />
       <LessonsLearned />
       <LabSection artifact={artifact} cvResults={cvResults} performanceMetrics={performanceMetrics} />
